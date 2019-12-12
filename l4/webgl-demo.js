@@ -261,48 +261,48 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
 
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
-  var VIEWMATRIX = [1,0,0,0,
+  /*var VIEWMATRIX = [1,0,0,0,
                     0,1,0,0,
                     0,0,1,0,
-                    0,0,0,1];
+                    0,0,0,1];*/
 
-  var vector_raw = [1, 1, 1];
+  var vector_raw = [0, 1, 0];
+  var point = [0, 0, 0];
+
   var vector_length = Math.sqrt(vector_raw[0] * vector_raw[0] + vector_raw[1] * vector_raw[1] + vector_raw[2] * vector_raw[2]);
   var vector = [vector_raw[0]/vector_length, vector_raw[1]/vector_length, vector_raw[2]/vector_length];
-  var point = [0, 0, 5];
-
-
+  
   var zy_length = Math.sqrt(vector[1] * vector[1] + vector[2] * vector[2]);
   
 
   var Translate = [1,0,0,0,
                    0,1,0,0,
                    0,0,1,0,
-                   point[0],point[1],point[2],1];
+                   -point[0],-point[1],-point[2],1];
 
   var Translate_r = [1,0,0,0,
                      0,1,0,0,
                      0,0,1,0,
-                     -point[0],-point[1],-point[2],1];
+                     point[0],point[1],point[2],1];
 
   var Rotate_x = [1,0,0,0,
-                  0,vector[2]/zy_length,-vector[1]/zy_length,0,
-                  0,vector[1]/zy_length,vector[2]/zy_length,0,
+                  0,vector[2]/zy_length,vector[1]/zy_length,0,
+                  0,-vector[1]/zy_length,vector[2]/zy_length,0,
                   0,0,0,1];
             
   var Rotate_x_r = [1,0,0,0,
-                    0,vector[2]/zy_length,vector[1]/zy_length,0,
-                    0,-vector[1]/zy_length,vector[2]/zy_length,0,
+                    0,vector[2]/zy_length,-vector[1]/zy_length,0,
+                    0,vector[1]/zy_length,vector[2]/zy_length,0,
                     0,0,0,1];
 
-  var Rotate_y = [zy_length,0,-vector[0],0,
+  var Rotate_y = [zy_length,0,vector[0],0,
                   0,1,0,0,
-                  vector[0],0,zy_length,0,
+                  -vector[0],0,zy_length,0,
                   0,0,0,1];
 
-  var Rotate_y_r = [zy_length,0,vector[0],0,
+  var Rotate_y_r = [zy_length,0,-vector[0],0,
                     0,1,0,0,
-                    -vector[0],0,zy_length,0,
+                    vector[0],0,zy_length,0,
                     0,0,0,1];
 
   var Rotate_z = [Math.cos(cubeRotation), Math.sin(cubeRotation), 0, 0,
@@ -314,7 +314,7 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
   var M2 = mul(Rotate_y_r, mul(Rotate_x_r, Translate_r));
   var M = mul(M1, mul(Rotate_z, M2));
 
-  VIEWMATRIX = mul(M, VIEWMATRIX);
+  //VIEWMATRIX = Mmul(M, VIEWMATRIX);
 
   var modelViewMatrix = mat4.fromValues(M[0],M[1],M[2],M[3],
                                         M[4],M[5],M[6],M[7],
@@ -329,8 +329,8 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
 
   /*mat4.translate(modelViewMatrix,     // destination matrix
                  modelViewMatrix,     // matrix to translate
-                 [-0.0, -0.0, -1.0]);  // amount to translate
-  mat4.rotate(modelViewMatrix,  // destination matrix
+                 [-1.0, -0.0, -0.0]);  // amount to translate
+  /*mat4.rotate(modelViewMatrix,  // destination matrix
               modelViewMatrix,  // matrix to rotate
               cubeRotation,     // amount to rotate in radians
               [0, 0, 0]);       // axis to rotate around (Z)
